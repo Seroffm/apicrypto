@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Crypto Analyse Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #c9d1d9;
+    }
+    .card {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 1rem;
+    }
+    .btn-primary {
+      background-color: #238636;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container py-5">
+  <h1 class="text-center mb-4">🧠 Crypto Analyse Dashboard</h1>
+  <div class="card p-4">
+    <div class="mb-3">
+      <label for="coin" class="form-label">Wähle eine Kryptowährung:</label>
+      <input type="text" id="coin" class="form-control" placeholder="z.B. bitcoin">
+    </div>
+    <button onclick="fetchData()" class="btn btn-primary w-100">Analyse starten</button>
+    <hr>
+    <div id="result" class="mt-4"></div>
+  </div>
+</div>
+
+<script>
+  async function fetchData() {
+    const coin = document.getElementById('coin').value || 'bitcoin';
+    const res = await fetch(`/api/empfehlung?coin=${coin}`);
+    const data = await res.json();
+
+    document.getElementById('result').innerHTML = `
+      <h3>${coin.toUpperCase()}</h3>
+      <p>💰 Preis: <strong>${data.preis} USD</strong></p>
+      <p>📊 RSI: ${data.rsi}</p>
+      <p>📈 MA(7): ${data.ma_7} | MA(30): ${data.ma_30}</p>
+      <p>✅ <strong style="color: ${getColor(data.empfehlung)};">Empfehlung: ${data.empfehlung}</strong></p>
+      <p>🧠 Begründung: <em>${data.begründung}</em></p>
+    `;
+  }
+
+  function getColor(empfehlung) {
+    switch(empfehlung.toLowerCase()) {
+      case 'kaufen': return 'limegreen';
+      case 'halten': return 'gold';
+      case 'verkaufen': return 'tomato';
+      default: return 'white';
+    }
+  }
+</script>
+</body>
+</html>
