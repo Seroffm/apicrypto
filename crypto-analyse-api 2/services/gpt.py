@@ -1,8 +1,8 @@
 
-import openai
+from openai import OpenAI
 import os
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_analysis(coin, preis, rsi, ma_7, ma_30):
     prompt = f"""
@@ -17,14 +17,14 @@ Gib bitte eine Empfehlung ab (Kaufen, Halten oder Verkaufen) und eine kurze Begr
 """
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
+        response = client.chat.completions.create(
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "Du bist ein professioneller Krypto-Analyst."},
                 {"role": "user", "content": prompt}
             ]
         )
-        content = response["choices"][0]["message"]["content"]
+        content = response.choices[0].message.content
         zeilen = content.strip().split("\n")
         empfehlung = zeilen[0].split(":")[-1].strip()
         begruendung = zeilen[1] if len(zeilen) > 1 else ""

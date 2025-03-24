@@ -5,6 +5,19 @@ from services.coingecko import get_price_and_history
 from services.indicators import calculate_indicators
 from services.gpt import generate_analysis
 
+coin_aliases = {
+    "btc": "bitcoin",
+    "bitcoin": "bitcoin",
+    "eth": "ethereum",
+    "link": "chainlink",
+    "chainlink": "chainlink",
+    "bnb": "binancecoin",
+    "xrp": "ripple",
+    "ada": "cardano",
+    "sol": "solana",
+    "dot": "polkadot"
+}
+
 app = Flask(__name__, template_folder="templates")
 
 @app.route("/")
@@ -13,7 +26,8 @@ def home():
 
 @app.route("/api/empfehlung", methods=["GET"])
 def empfehlung():
-    coin = request.args.get("coin", "bitcoin").lower()
+    coin_input = request.args.get("coin", "bitcoin").lower()
+    coin = coin_aliases.get(coin_input, coin_input)
     try:
         preis, history = get_price_and_history(coin)
     except Exception as e:
