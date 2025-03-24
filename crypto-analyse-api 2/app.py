@@ -1,5 +1,6 @@
 
 from flask import Flask, request, jsonify, render_template
+import os
 from services.coingecko import get_price_and_history
 from services.indicators import calculate_indicators
 from services.gpt import generate_analysis
@@ -32,4 +33,5 @@ def empfehlung():
     })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
