@@ -13,7 +13,7 @@ def home():
 
 @app.route("/api/empfehlung", methods=["GET"])
 def empfehlung():
-    coin = request.args.get("coin", "bitcoin")
+    coin = request.args.get("coin", "bitcoin").lower()
     try:
         preis, history = get_price_and_history(coin)
     except Exception as e:
